@@ -10,9 +10,9 @@ t_imap: Returns an iterator for a sequential map.
 
 from collections.abc import Sized
 from typing import Any, Callable, Generator, Iterable, List
+from multiprocessing import cpu_count
 
-from pathos.helpers import cpu_count
-from pathos.multiprocessing import ProcessPool as Pool
+import joblib
 from tqdm.auto import tqdm
 
 
@@ -44,17 +44,15 @@ def _parallel(ordered: bool, function: Callable, *iterables: Iterable, **kwargs:
     length = total or (min(lengths) if lengths else None)
 
     # Create parallel generator
-    map_type = 'imap' if ordered else 'uimap'
-    pool = Pool(num_cpus)
-    map_func = getattr(pool, map_type)
-
+    parallel = joblib.Parallel(return_as="generator", n_jobs=num_cpus)
+    delayed_func = joblib.delayed(function)
+    map_func = map(delayed_func, *iterables)
+    
     # Choose tqdm variant
     tqdm_func = kwargs.pop('tqdm', tqdm)
 
-    for item in tqdm_func(map_func(function, *iterables), total=length, **kwargs):
+    for item in tqdm_func(parallel(map_func), total=length, **kwargs):
         yield item
-
-    pool.clear()
 
 
 def p_map(function: Callable, *iterables: Iterable, **kwargs: Any) -> List[Any]:

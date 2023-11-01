@@ -28,7 +28,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'tqdm>=4.45.0',
-        'pathos>=0.2.5',
+        'joblib>=1.3',
         'six>=1.13.0'
     ],
     tests_require=['pytest'],
