@@ -8,6 +8,7 @@ t_map: Performs a sequential map.
 t_imap: Returns an iterator for a sequential map.
 """
 
+import warnings
 from collections.abc import Sized
 from typing import Any, Callable, Generator, Iterable, List
 from multiprocessing import cpu_count
@@ -28,6 +29,9 @@ def _parallel(ordered: bool, function: Callable, *iterables: Iterable, **kwargs:
         A generator which will apply the function to each element of the given Iterables
         in parallel in order with a progress bar.
     """
+    
+    if not ordered:
+        warnings.warn('Unordered map is not supported yet. Proceeding with ordered map.')
 
     # Extract num_cpus
     num_cpus = kwargs.pop('num_cpus', None)
