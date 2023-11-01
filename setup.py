@@ -16,7 +16,7 @@ with open('README.md', encoding='utf-8') as f:
 
 setup(
     name='p_tqdm',
-    version='1.4.0',
+    version='1.5.0',
     author='Kyle Swanson',
     author_email='swansonk.14@gmail.com',
     description='Parallel processing with progress bars',
